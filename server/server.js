@@ -5,13 +5,25 @@ import cors from 'cors';
 import { generateRoomCode, createGameBoard, revealCard, switchTeam } from './gameLogic.js';
 
 const app = express();
-app.use(cors());
+
+// CORS configuration - allow both local and production origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173", // Vite default port
-    methods: ["GET", "POST"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 

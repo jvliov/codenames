@@ -42,7 +42,12 @@ codenames/
     └── package.json
 ```
 
-## Setup Instructions
+## Quick Links
+
+- **[Deployment Guide](DEPLOYMENT.md)** - Deploy to Render.com for free
+- **Local Development** - Instructions below
+
+## Local Development Setup
 
 ### Prerequisites
 
