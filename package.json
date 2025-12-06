@@ -1,0 +1,21 @@
+{
+  "name": "codenames",
+  "version": "1.0.0",
+  "description": "Codenames web game with dual device setup",
+  "scripts": {
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "install-all": "cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": [
+    "codenames",
+    "game",
+    "socket.io",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17"
+  }
+}
