@@ -37,118 +37,133 @@ export default function GameBoard({ gameState, roomCode, socket, isSpymaster }) 
   const currentViewIsSpymaster = viewMode === 'spymaster';
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold">CODENAMES</h1>
-            <p className="text-gray-400 text-sm md:text-base">Room: <span className="font-mono font-bold text-white">{roomCode}</span></p>
-          </div>
+    <div className="min-h-screen bg-gray-900 text-white p-2 sm:p-4 lg:p-6">
+      <div className="max-w-[1800px] mx-auto">
+        {/* Desktop: Side-by-side layout, Mobile: Stacked */}
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
 
-          {/* View Mode Toggle */}
-          <div className="flex gap-2 bg-gray-800 p-1 rounded-lg">
-            <button
-              onClick={() => setViewMode('board')}
-              className={`px-4 py-2 rounded-md font-semibold transition-colors ${
-                viewMode === 'board'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Board View
-            </button>
-            <button
-              onClick={() => setViewMode('spymaster')}
-              className={`px-4 py-2 rounded-md font-semibold transition-colors ${
-                viewMode === 'spymaster'
-                  ? 'bg-purple-600 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Spymaster
-            </button>
-          </div>
-        </div>
+          {/* Left Sidebar - Controls and Info */}
+          <div className="lg:w-80 flex-shrink-0 space-y-4">
+            {/* Header */}
+            <div className="bg-gray-800 rounded-lg p-4">
+              <h1 className="text-2xl lg:text-3xl font-bold mb-2">CODENAMES</h1>
+              <p className="text-gray-400 text-sm">
+                Room: <span className="font-mono font-bold text-white">{roomCode}</span>
+              </p>
+            </div>
 
-        {/* Game Status */}
-        <div className="flex flex-wrap items-center gap-4 md:gap-8">
-          {/* Current Turn */}
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400">Current Turn:</span>
-            <span className={`px-3 py-1 rounded-lg font-bold ${
-              gameState.currentTeam === 'red' ? 'bg-red-600' : 'bg-blue-600'
+            {/* View Mode Toggle */}
+            <div className="bg-gray-800 rounded-lg p-3">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewMode('board')}
+                  className={`flex-1 py-2 px-3 rounded-md font-semibold text-sm transition-colors ${
+                    viewMode === 'board'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Board
+                </button>
+                <button
+                  onClick={() => setViewMode('spymaster')}
+                  className={`flex-1 py-2 px-3 rounded-md font-semibold text-sm transition-colors ${
+                    viewMode === 'spymaster'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-700 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Spymaster
+                </button>
+              </div>
+            </div>
+
+            {/* Game Status */}
+            <div className="bg-gray-800 rounded-lg p-4 space-y-3">
+              <div>
+                <div className="text-gray-400 text-sm mb-2">Current Turn</div>
+                <div className={`w-full py-2 px-4 rounded-lg font-bold text-center ${
+                  gameState.currentTeam === 'red' ? 'bg-red-600' : 'bg-blue-600'
+                }`}>
+                  {gameState.currentTeam === 'red' ? 'RED TEAM' : 'BLUE TEAM'}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-gray-400 text-sm mb-2">Cards Remaining</div>
+                <div className="flex gap-3">
+                  <div className="flex-1 bg-red-600/20 border border-red-600 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold">{gameState.redRemaining}</div>
+                    <div className="text-xs text-gray-300 mt-1">Red</div>
+                  </div>
+                  <div className="flex-1 bg-blue-600/20 border border-blue-600 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold">{gameState.blueRemaining}</div>
+                    <div className="text-xs text-gray-300 mt-1">Blue</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Game Over Status */}
+              {gameState.gameOver && (
+                <div className={`w-full py-3 px-4 rounded-lg font-bold text-center text-lg ${
+                  gameState.winner === 'red' ? 'bg-red-600' : 'bg-blue-600'
+                }`}>
+                  {gameState.winner === 'red' ? 'RED' : 'BLUE'} WINS!
+                </div>
+              )}
+            </div>
+
+            {/* Controls */}
+            <div className="bg-gray-800 rounded-lg p-4 space-y-2">
+              <button
+                onClick={handleNewGame}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+              >
+                New Game
+              </button>
+              {currentViewIsSpymaster && !gameState.gameOver && (
+                <button
+                  onClick={handleEndTurn}
+                  className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                >
+                  End Turn
+                </button>
+              )}
+            </div>
+
+            {/* View Mode Info */}
+            <div className={`rounded-lg p-3 text-sm ${
+              currentViewIsSpymaster
+                ? 'bg-purple-900/50 border border-purple-500 text-purple-200'
+                : 'bg-blue-900/50 border border-blue-500 text-blue-200'
             }`}>
-              {gameState.currentTeam === 'red' ? 'RED' : 'BLUE'}
-            </span>
-          </div>
-
-          {/* Scores */}
-          <div className="flex gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-600 rounded"></div>
-              <span className="font-bold">{gameState.redRemaining}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-blue-600 rounded"></div>
-              <span className="font-bold">{gameState.blueRemaining}</span>
+              <div className="font-bold mb-1">
+                {currentViewIsSpymaster ? 'Spymaster View' : 'Board View'}
+              </div>
+              <div className="text-xs opacity-90">
+                {currentViewIsSpymaster
+                  ? 'Click cards to reveal them to all players'
+                  : 'Watch as cards are revealed'}
+              </div>
             </div>
           </div>
 
-          {/* Game Over Status */}
-          {gameState.gameOver && (
-            <div className={`px-4 py-2 rounded-lg font-bold text-lg ${
-              gameState.winner === 'red' ? 'bg-red-600' : 'bg-blue-600'
-            }`}>
-              {gameState.winner === 'red' ? 'RED' : 'BLUE'} WINS!
+          {/* Right Side - Game Board */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-full max-w-3xl">
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
+                {gameState.cards.map((card, index) => (
+                  <Card
+                    key={index}
+                    card={card}
+                    index={index}
+                    isSpymaster={currentViewIsSpymaster}
+                    onReveal={handleRevealCard}
+                  />
+                ))}
+              </div>
             </div>
-          )}
-        </div>
-
-        {/* Controls */}
-        <div className="flex flex-wrap gap-3 mt-4">
-          <button
-            onClick={handleNewGame}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-          >
-            New Game
-          </button>
-          {currentViewIsSpymaster && !gameState.gameOver && (
-            <button
-              onClick={handleEndTurn}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-            >
-              End Turn
-            </button>
-          )}
-        </div>
-
-        {/* View Mode Indicator */}
-        <div className="mt-4">
-          {currentViewIsSpymaster ? (
-            <div className="bg-purple-900/50 border border-purple-500 text-purple-200 px-4 py-2 rounded-lg inline-block">
-              <span className="font-bold">Spymaster View:</span> Click cards to reveal them to all players
-            </div>
-          ) : (
-            <div className="bg-blue-900/50 border border-blue-500 text-blue-200 px-4 py-2 rounded-lg inline-block">
-              <span className="font-bold">Board View:</span> Watch as cards are revealed
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Game Board Grid */}
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-5 gap-2 md:gap-3 lg:gap-4">
-          {gameState.cards.map((card, index) => (
-            <Card
-              key={index}
-              card={card}
-              index={index}
-              isSpymaster={currentViewIsSpymaster}
-              onReveal={handleRevealCard}
-            />
-          ))}
+          </div>
         </div>
       </div>
     </div>

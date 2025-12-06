@@ -53,8 +53,8 @@ export default function Card({ card, index, isSpymaster, onReveal }) {
         ${getCardColor()}
         aspect-square w-full
         flex items-center justify-center
-        font-bold text-lg md:text-xl lg:text-2xl
-        border-4 rounded-lg
+        font-bold text-sm md:text-base lg:text-lg
+        border-3 rounded-md
         transition-all duration-200
         ${!card.revealed && isSpymaster ? 'cursor-pointer active:scale-95' : ''}
         ${card.revealed ? 'opacity-90' : ''}
