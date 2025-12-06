@@ -18,7 +18,7 @@ services:
         # Set this to your frontend URL after deployment (e.g., https://codenames-client.onrender.com)
 
   # Frontend React App
-  - type: static
+  - type: web
     name: codenames-client
     runtime: static
     buildCommand: cd client && npm install && npm run build
